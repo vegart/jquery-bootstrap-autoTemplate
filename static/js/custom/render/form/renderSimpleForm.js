@@ -12,15 +12,11 @@
 			th : [],
 		};
 		this.pageInfo		= [{
-			pageTitle 		  : '',
-			formTitle 		  : '',
-			submit 			    : 'somecontroller.extension?someCommand=saveTemplate',
+			pageTitle 		: '',
+			formTitle 		: '',
+			submit 			: 'somecontroller.extension?someCommand=saveTemplate',
 			saveButtonText	: '저장',
-			saveAction 		  : function(){
-				
-				console.log('preparing ajax call...')
-				console.log(this.submit);
-			
+			saveAction 		: function(){
 				$.ajax({
 					url		: this.submit,
 					data	: $('#' + pObj.formId).serializeArray(),
@@ -99,22 +95,22 @@
 		var $pageInfo = $this.pageInfo[0];
 		
 		var _formHtml	= '<div class="form-group row  text-center" >';
-		_formHtml		  += '<span>'+ $pageInfo.formTitle + '</span>';
-		_formHtml		  += '</div>';
+		_formHtml		+= '<span>'+ $pageInfo.formTitle + '</span>';
+		_formHtml		+= '</div>';
 		
 		$container.prepend(_formHtml);
 		
-		var _titleHtml  = '<div class="form-group row">';
-		_titleHtml		  += '<span>'+ $pageInfo.pageTitle+ '</span>';;
-		_titleHtml		  += '</div>';
+		var _titleHtml	= '<div class="form-group row">';
+		_titleHtml		+= '<span>'+ $pageInfo.pageTitle+ '</span>';;
+		_titleHtml		+= '</div>';
 		
 		$container.prepend(_titleHtml);
 		
 		var _saveButtonHtml = '<div class="form-group row pull-right">';
 		
-		var saveButtonId    = 'btnSave'.concat($this.xmlId);
-		_saveButtonHtml		  += '<input type="button" value="'+ $pageInfo.saveButtonText +'" id="' + saveButtonId + '" class="btn-primary" />'
-		_saveButtonHtml		  += '</div>';
+		var saveButtonId	= 'btnSave'.concat($this.xmlId);
+		_saveButtonHtml		+= '<input type="button" value="'+ $pageInfo.saveButtonText +'" id="' + saveButtonId + '" class="btn-primary" />'
+		_saveButtonHtml		+= '</div>';
 		
 		$container.append(_saveButtonHtml);
 		
@@ -134,20 +130,20 @@
 		var tdArray			= tableInfo.td;
 		var thArray			= tableInfo.th;
 		
-		var _tableHtml  = '<div class="form-group form-inline row" style="font-size:12px;"><table class="table table-bordered table_input_form" style="table-layout: fixed;">';
+		var _tableHtml	= '<div class="form-group form-inline row" style="font-size:12px;"><table class="table table-bordered table_input_form" style="table-layout: fixed;">';
 		
 		//create ColGroup
-		_tableHtml			+= '<colgroup><col width="40%"><col width="60%"></colgroup><tbody>';
+		_tableHtml		+= '<colgroup><col width="40%"><col width="60%"></colgroup><tbody>';
 		
 		thArray.forEach(function(e,i){
 			//해당 row와 연관된 td objects.
 			var relevantTdArray = tdArray.filter(function(eachTd){return eachTd.row == i});
 			
 			//sort_pos의 max값 만큼 rowspan해주기.
-			var rowSpan			= Math.max.apply(null,relevantTdArray.map(function(eachTd){return eachTd.sort_pos}));
+			var rowSpan	= Math.max.apply(null,relevantTdArray.map(function(eachTd){return eachTd.sort_pos}));
 			
 			//2. td 그려주기
-			var pos = 1;
+			var pos	= 1;
 			for(pos=1; pos < rowSpan+1; pos++)
 			{
 				_tableHtml	+= '<tr>'; 
@@ -157,7 +153,8 @@
 					_tableHtml	+= '<th rowspan="'+rowSpan+'" style="white-space: initial;"><div>'+e.mainLabel+'</div><div>' +e.explainHtml+'</div></th>';
 				}
 			
-				_tableHtml += '<td>';
+				_tableHtml		+= '<td>';
+				
 				var currentRowObjects = relevantTdArray.filter(function(eachTd){return eachTd.sort_pos == pos});
 				
 				currentRowObjects.forEach(function(eachCurrentRowObj){
@@ -166,11 +163,11 @@
 					
 					var inputType 		= eachCurrentRowObj.type;
 					var showLabel 		= eachCurrentRowObj.showLabel;
-					var elemName		  = eachCurrentRowObj.name;
+					var elemName		= eachCurrentRowObj.name;
 					var isRequired		= eachCurrentRowObj.required;
 					var appendClass		= eachCurrentRowObj.class ? defaultClass+ eachCurrentRowObj.class : defaultClass;
 					var selectOptions	= eachCurrentRowObj.options;
-					var style			    = eachCurrentRowObj.style;
+					var style			= eachCurrentRowObj.style;
 					
 					var customAttributeArray	= eachCurrentRowObj.attributes;
 					
@@ -185,37 +182,37 @@
 					if(customAttributeArray && $.isArray(customAttributeArray))
 					{
 						customAttributeArray.forEach(function(eachAttribute){
-							customAttributeString += eachAttribute.key + '=' + '"' + eachAttribute.value + '" ';
+							customAttributeString	+= eachAttribute.key + '=' + '"' + eachAttribute.value + '" ';
 						});
 					}
 					
 					//2. required속성 할당
-					var requiredString = ((isRequired || isRequired === 'true') ? ' required ' : ' ' );
+					var requiredString	= ((isRequired || isRequired === 'true') ? ' required ' : ' ' );
 					
 					//3. style 속성 할당
-					var styleString	   = style ? 'style="'.concat(style,'" ') : ' ';
+					var styleString		= style ? 'style="'.concat(style,'" ') : ' ';
 					
-					var attributeRequiredAndStyleString = customAttributeString + requiredString + styleString;
+					var attributeRequiredAndStyleString	= customAttributeString + requiredString + styleString;
 					
 					if(inputType === 'select')
 					{
 						if(!selectOptions.isAjax)
 						{
-							_tableHtml	+= '<select name="'+ elemName +'" class="'+ appendClass +'" ' + attributeRequiredAndStyleString + '>';
+							_tableHtml		+= '<select name="'+ elemName +'" class="'+ appendClass +'" ' + attributeRequiredAndStyleString + '>';
 							selectOptions.array.forEach(function(eachOption){
 								_tableHtml	+= '<option value="'+ eachOption.key +'">';
 								_tableHtml	+= eachOption.value;
 								_tableHtml	+= '</option>';
 							});
 						
-							_tableHtml	+= '</select>';
+							_tableHtml		+= '</select>';
 						}
 						else
 						{
-							_tableHtml	+= '<select name="'+ elemName +'" class="'+ appendClass +'" '+ attributeRequiredAndStyleString + '>';
+							_tableHtml		+= '<select name="'+ elemName +'" class="'+ appendClass +'" '+ attributeRequiredAndStyleString + '>';
 							console.log('MAKE AJAX CALL TO APPEND OPTIONS WITH URL DEFINED');
 							console.log(selectOptions);
-							_tableHtml	+= '</select>';
+							_tableHtml		+= '</select>';
 						}
 					}
 					else if(inputType === 'textArea')
@@ -229,7 +226,7 @@
 					}
 					
 				});
-				_tableHtml += '</td>';
+				_tableHtml	+= '</td>';
 				_tableHtml	+= '</tr>';
 			};
 		});
