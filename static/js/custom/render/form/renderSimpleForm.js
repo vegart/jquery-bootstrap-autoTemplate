@@ -2,8 +2,9 @@
 
 	var $ = jQuery;
 
+			
 	var TemplateHandler = function(pObj){
-		
+			
 		this.renderAt = pObj.formId;
 		this.xmlId    = pObj.xmlId;
 		
@@ -70,8 +71,14 @@
 
 	TemplateHandler.prototype.render = function(p_objectOrId){
 		var $this	= this;
+		var $f		= $('#' + $this.renderAt);
 		
-		return $this.renderTable().renderContainer(p_objectOrId);
+		$this = $this.renderTable().renderContainer(p_objectOrId);
+				
+		$( ".js-date-picker",$f ).datepicker({});
+    
+		
+		return $this;
 	}
 
 	TemplateHandler.prototype.renderContainer = function(p_objectOrId){
@@ -94,25 +101,25 @@
 		
 		var $pageInfo = $this.pageInfo[0];
 		
-		var _formHtml	= '<div class="form-group row  text-center" >';
-		_formHtml		+= '<span>'+ $pageInfo.formTitle + '</span>';
+		var _formHtml	= '<div class="form-group  text-center" >';
+		_formHtml		+= '<span><h3>'+ $pageInfo.formTitle + '</h3></span>';
 		_formHtml		+= '</div>';
 		
 		$container.prepend(_formHtml);
 		
-		var _titleHtml	= '<div class="form-group row">';
-		_titleHtml		+= '<span>'+ $pageInfo.pageTitle+ '</span>';;
+		var _titleHtml	= '<div class="form-group">';
+		_titleHtml		+= '<span><h2>'+ $pageInfo.pageTitle+ '</h2></span>';
 		_titleHtml		+= '</div>';
 		
 		$container.prepend(_titleHtml);
 		
-		var _saveButtonHtml = '<div class="form-group row pull-right">';
+		var _saveButtonHtml = '<div class="form-group pull-right">';
 		
 		var saveButtonId	= 'btnSave'.concat($this.xmlId);
-		_saveButtonHtml		+= '<input type="button" value="'+ $pageInfo.saveButtonText +'" id="' + saveButtonId + '" class="btn-primary" />'
+		_saveButtonHtml		+= '<input type="button" value="'+ $pageInfo.saveButtonText +'" id="' + saveButtonId + '" class="btn-primary form-control" />'
 		_saveButtonHtml		+= '</div>';
 		
-		$container.append(_saveButtonHtml);
+		$container.prepend(_saveButtonHtml);
 		
 		$('#' + saveButtonId).on('click',function(){
 		  $pageInfo.saveAction();
@@ -124,16 +131,16 @@
 	TemplateHandler.prototype.renderTable = function(){
 		
 		var $this	= this;
-		var $f		= $('#' + $this.renderAt);
+		var $f		= $('#' + $this.renderAt), f= $f[0];
 		
 		var tableInfo		= $this.tableInfo;
 		var tdArray			= tableInfo.td;
 		var thArray			= tableInfo.th;
 		
-		var _tableHtml	= '<div class="form-group form-inline row" style="font-size:12px;"><table class="table table-bordered table_input_form" style="table-layout: fixed;">';
+		var _tableHtml	= '<div class="form-group form-inline table-responsive" style="font-size:12px;"><table class="table table-bordered table-hover" >';
 		
 		//create ColGroup
-		_tableHtml		+= '<colgroup><col width="40%"><col width="60%"></colgroup><tbody>';
+		_tableHtml		+= '<colgroup><col width="20%"><col width="80%"></colgroup><tbody>';
 		
 		thArray.forEach(function(e,i){
 			//해당 row와 연관된 td objects.
@@ -153,7 +160,7 @@
 					_tableHtml	+= '<th rowspan="'+rowSpan+'" style="white-space: initial;"><div>'+e.mainLabel+'</div><div>' +e.explainHtml+'</div></th>';
 				}
 			
-				_tableHtml		+= '<td>';
+				_tableHtml		+= '<td style="height: 100%;">';
 				
 				var currentRowObjects = relevantTdArray.filter(function(eachTd){return eachTd.sort_pos == pos});
 				
@@ -171,9 +178,9 @@
 					
 					var customAttributeArray	= eachCurrentRowObj.attributes;
 					
-					if(showLabel || showLabel === 'true')
+					if((showLabel || showLabel === 'true') && inputType !== 'button')
 					{
-						_tableHtml	+= '<label style="max-width:10%;display:inline-block;margin-right:15px;">' + eachCurrentRowObj.label + '</label>';
+						_tableHtml	+= '<label class="form-control"  style="width:150px;margin-right:2px;border:0;word-wrap: break-word;height:100%;">' + eachCurrentRowObj.label + '</label>';
 					}
 					
 					//1.customAttribute 할당
@@ -220,6 +227,15 @@
 						_tableHtml	+= '<textArea name="'+ elemName +'" class="'+ appendClass +'" ' + attributeRequiredAndStyleString + '>';
 						_tableHtml	+= '</textArea>';
 					}
+					else if(inputType === 'date')
+					{
+						appendClass += ' js-date-picker';
+						_tableHtml	+= '<input type="text" name="'+ elemName +'"  class="'+ appendClass +'" placeholder="'+ eachCurrentRowObj.label +'"'  + attributeRequiredAndStyleString + '/>';
+					}
+					else if(inputType === 'button')
+					{
+						_tableHtml	+= '<input type="button" name="'+ elemName +'"  class="'+ appendClass +'" value="'+ eachCurrentRowObj.label +'"'  + attributeRequiredAndStyleString + '/>';
+					}
 					else
 					{
 						_tableHtml	+= '<input type="'+ inputType +'" name="'+ elemName +'"  class="'+ appendClass +'" placeholder="'+ eachCurrentRowObj.label +'"'  + attributeRequiredAndStyleString + '/>';
@@ -237,5 +253,5 @@
 		$f.append(_tableHtml);
 		
 		return $this;
-	}  
+	}
 })(jQuery,$,document)
