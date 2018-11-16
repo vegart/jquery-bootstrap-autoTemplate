@@ -178,9 +178,12 @@
 					
 					var customAttributeArray	= eachCurrentRowObj.attributes;
 					
-					if((showLabel || showLabel === 'true') && inputType !== 'button')
+					if(showLabel && inputType != 'button')
 					{
-						_tableHtml	+= '<label class="form-control"  style="width:150px;margin-right:2px;border:0;word-wrap: break-word;height:100%;">' + eachCurrentRowObj.label + '</label>';
+						if((typeof showLabel ==='boolean' && showLabel === true) | (typeof showLabel === 'string' && showLabel === 'true'))
+						{
+							_tableHtml	+= '<label class="form-control"  style="width:150px;margin-right:2px;border:0;word-wrap: break-word;height:100%;">' + eachCurrentRowObj.label + '</label>';
+						}
 					}
 					
 					//1.customAttribute 할당
